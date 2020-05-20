@@ -1,0 +1,112 @@
+body {
+  margin-left: 25%;
+  margin-right: 25%;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  color: #444;
+}
+
+label {
+  display: inline-block;
+  width: 100px;
+}
+
+a, a:hover, a:visited{
+  color: #00aced;
+  text-decoration: none;
+}
+
+input {
+  padding: 5px;
+}
+
+.margin5{
+  margin-top: 5px;
+}
+
+.margin10{
+    margin-top: -10px;
+}
+
+
+.input300{
+  width: 300px;
+  font-size: 14px;
+}
+
+.input400{
+  width: 400px;
+}
+
+.btn, .btn:focus, .btn-ok:visited{
+  text-decoration: none;
+  -webkit-transition: all .2s ease-in;
+  transition: all .2s ease-in;
+  color: #fff;
+  background: #00aced;
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-left: -2px;
+  margin-bottom: 10px;
+}
+
+.btn:hover{
+  /*background: #2c2c2c;*/
+  cursor: pointer;
+  /*border-color:#353535;*/
+}
+
+
+.btngray, .btngray2{
+  text-decoration: none;
+  -webkit-transition: all .2s ease-in;
+  transition: all .2s ease-in;
+  color: #909090;
+  background: #BEBEBE;
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-left: -2px;
+}
+
+h1{
+  color: #00aced;
+  margin-top: 20px;
+  margin-left: -2px;
+  font-weight: normal;
+}
+
+h1, h2, h3 {
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 0;
+}
+
+h2 {
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 10px;
+  margin-top: 0px;
+  font-size: 18px;
+}
+
+h3 {
+  font-size: 12px;
+}
+
+.mini-font {
+  font-size: 90%;
+}
+
+.black {
+  color: black;
+}
+
+.blue{
+  color: #00aced;
+}
+
+.gray, .gray2 {
+  color: #AAA;
+}

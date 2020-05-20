@@ -1,0 +1,291 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Vue.js Группы карточек</title>
+  <script src="https://unpkg.com/vue"></script>
+  <script src="https://unpkg.com/vuex"></script>
+  <link rel="stylesheet" type="text/css" href="assets/css/app.css"/>
+</head>
+<div id="app">
+  <header>
+        <p><h1>{{ sitename }}</h1></p>
+  </header>
+  
+  <main>   
+
+    <h2>Добавить карточку:</h2>
+    <form class="margin10" v-on:submit.prevent="addNewCard">
+      <p for="new-card-name">Название карточки:</p>
+      <input
+        v-model="newTodoText"
+        id="new-card-name"
+        class="input300"
+        placeholder="Например, покормить медведя"
+      >
+      <p for="new-card-state">Состояние выполнения:</p>
+      <p>
+      <select
+        id = "new-card-state"
+        v-model="newTodoState"
+        class="input300" 
+      >        
+        <option disabled value="">Выберите один из вариантов</option>
+        <option v-for="item in stateList"
+          :value="item.value">{{item.value}}
+        </option>
+      </select>
+      </p>    
+      <p for="new-card-state">Группа:</p>
+      <p>
+      <select
+        id = "new-card-group"
+        v-model="newTodoGroup"
+        class="input300" 
+      >        
+        <option disabled value="">Выберите группу</option>
+        <option v-for="item in groups"
+          :value="item.title">{{item.title}}
+        </option>
+      </select>
+      </p>          
+      <button
+        class="btn" 
+      >
+      Добавить</button>
+    </form>
+
+    <form>
+      <p>Отбор по наименованию:</p>
+      <input 
+        v-model="searchName"
+        class="input300" 
+      >
+    </form>
+
+    <form>
+      <p>Отбор по состоянию:</p>
+      <input 
+        v-model="searchState"
+        class="input300" 
+      >
+    </form>    
+    
+    <h2>Список карточек:</h2>
+    <card-post
+      v-bind:groups="groups"
+      v-for="(post, index) in filterCards"
+      v-bind:key="post.id"
+      v-bind:post="post"
+      v-on:remove="cards.splice(index, 1)"
+    >      
+    </card-post>
+
+    <p><h2>Добавить группу:</h2></p>
+    <form v-on:submit.prevent="addNewGroup">
+      <p for="new-group-name">Название группы:</p>
+      <input
+        v-model="newTodoGroup"
+        id="new-group-name"
+        class="input300"
+        placeholder="Например, хищники"
+      >
+      </p>      
+      <button
+        class="btn" 
+      >
+      Добавить</button>
+    </form>    
+    <h2>Список групп:</h2>
+    <group-post 
+      v-for="(post, index) in groups"
+      v-bind:key="post.id"
+      v-bind:post="post"
+      v-on:remove="groups.splice(index, 1)"
+    >      
+    </group-post>
+
+
+  </main>
+</div>
+  
+  <script type="text/javascript">
+    Vue.component('option-groups', {
+      props: ['post'], 
+      template:`\
+        <option>{{ post.title }}</option>
+      `
+    }); 
+
+    var CardPost = Vue.component('card-post', {
+      props: ['post', 'groups' ],      
+      template: `\
+        <div class="card-post">\
+          <span class="mini-font">Название: </span><span class="blue">{{ post.title }}.</span>\
+          <span class="mini-font">Статус: </span>\
+          <p><select id="new-card-state-up" v-model="value" @input="$emit('input', $event.target.value)" @change="upState" class="input300">\
+          <option active value="1">Не сделано</option><option value="2">Cделано</option></select></p>\
+          <span class="mini-font">Группа: </span>\
+          <p><select id="new-card-group-up" v-model="value2" @input="$emit('input', $event.target.value)" @change="upGroup" class="input300">\
+          <option-groups v-for="(post, index) in groups" :value="post.id"  v-bind:key="post.id" v-bind:post="post"> </option-groups></select></p>\
+          <button class="btn" v-on:click="$emit(\'remove\')">Удалить</button>\
+        </div>\
+      `,
+      data: function() {
+        return {
+            value: this.selectedState(),
+            value2: this.selectedGroup()
+        };
+      },
+
+      methods: {
+        upState: function () {
+          if (this.value == 1){
+            this.post.state = "Не сделано";
+          }
+          else {
+            this.post.state = "Сделано";
+          }
+        },
+        upGroup: function () {
+          var findGroupTitle = this.groups.find(item => item.id == this.value2);          
+          if (findGroupTitle === undefined){
+            this.post.group = "";
+          }
+          else{
+            this.post.group = findGroupTitle.title;
+          }
+        },
+
+        selectedState: function () {
+          if (this.post.state === "Не сделано")
+            return 1;
+          else return 2;
+        },
+
+        selectedGroup: function () {
+
+          var findGroup = this.groups.find(item => item.title == this.post.group);
+
+          if (findGroup === undefined){
+            return -1;
+          }
+          else{
+            return findGroup.id; 
+          }         
+        }        
+      }
+    });    
+    var GroupPost = Vue.component('group-post', {
+      props: ['post'],      
+      template: `\
+        <div class="group-post">\
+          <p><span class="mini-font">Название: </span><span>{{ post.title }}</span></p>\        
+          <button class="btn" v-on:click="$emit(\'remove\')">Удалить</button>\
+        </div>\
+      `
+    });      
+    var VM = new Vue({
+      el: '#app',   
+
+      components: {
+        "card-post": CardPost,
+        "group-post": GroupPost
+      },
+
+      data: {
+
+        sitename: "Vue.js - Группы карточек",       
+        stateList: [
+          { "value": "Не сделано" },
+          { "value": "Cделано" }
+        ],
+        newTodoText: '',
+        newTodoState: '',
+        newTodoGroup: '',
+        searchName: '',
+        searchState: '',
+
+        cards: [
+          { 
+            id: 1, 
+            title: 'Покормить мышь', 
+            state: 'Сделано',
+            group: 'Грызуны' 
+          },
+          { 
+            id: 2, 
+            title: 'Покормить кота', 
+            state: 'Не сделано', 
+            group: 'Плотоядные'
+          }, 
+          { 
+            id: 3, 
+            title: 'Покормить собаку', 
+            state: 'Cделано',
+            group: ''            
+          }
+        ],
+        groups: [
+          { 
+            id: 1001, 
+            title: 'Грызуны'
+          },
+          { 
+            id: 1002, 
+            title: 'Плотоядные'
+          },
+          { 
+            id: 1003, 
+            title: 'Травоядные'
+          }
+        ],
+
+        nextTodoId: 4,         
+        nextGroupId: 1004   
+      
+      },
+
+      methods: {     
+        addNewCard: function () {
+          this.cards.push({
+            id: this.nextTodoId++,
+            title: this.newTodoText,
+            state: this.newTodoState,
+            group: this.newTodoGroup
+          })
+          this.newTodoText = '';
+          this.newTodoState = '';
+          this.newTodoGroup = '';
+        },             
+        addNewGroup: function () {
+          this.groups.push({
+            id: this.nextGroupId++,
+            title: this.newTodoGroup,
+          })
+          this.newTodoGroup = '';
+        }
+
+      },
+      computed:{
+        filterCards: function(){
+          var loc_title = this.searchName.toLowerCase();
+          var loc_state = this.searchState.toLowerCase();
+          if ( loc_title.length > 0 ){
+            return this.cards.filter(function (elem) {                 
+              if(loc_title==='') return true;
+                else return elem.title.toLowerCase().indexOf(loc_title) > -1;              
+            })
+          }
+          else {
+              return this.cards.filter(function (elem) {                 
+                if(loc_state==='') return true;
+                  else return elem.state.toLowerCase().indexOf(loc_state) > -1;
+              })
+          }
+        }
+      }
+     
+    });
+  </script>
+  </body>
+</html>
