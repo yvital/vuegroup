@@ -8,7 +8,7 @@
 </head>
 <div id="app">
   <header>
-        <p><h1>{{ sitename }}</h1></p>
+        <p><h1>{{ siteName }}</h1></p>
   </header>
   
   <main>   
@@ -135,7 +135,7 @@
       `
     }); 
 
-    var CardPost = Vue.component('card-post', {
+    let cardPost = Vue.component('card-post', {
       props: ['post', 'groups'],      
       template: `\
         <div class="card-post">\
@@ -174,13 +174,16 @@
           }
         },
         upGroup: function () {
-          var findGroupTitle = this.groups.find(item => item.id == this.value2);          
-          if (findGroupTitle === undefined){
-            this.post.group = "";
-          }
-          else{
+          let findGroupTitle = this.groups.find(item => item.id == this.value2);     
+
+          findGroupTitle = 0;
+
+          if (findGroupTitle.title === undefined) {
+             this.post.group = '';
+          } else {
             this.post.group = findGroupTitle.title;
           }
+          
         },
 
         selectedState: function () {
@@ -191,7 +194,7 @@
 
         selectedGroup: function () {
 
-          var findGroup = this.groups.find(item => item.title == this.post.group);
+          let findGroup = this.groups.find(item => item.title == this.post.group);
 
           if (findGroup === undefined){
             return -1;
@@ -208,8 +211,8 @@
       },
 
       filters: {
-        formatDescription(description, var_reduction ) {
-          if (var_reduction) {
+        formatDescription(description, let_reduction ) {
+          if (let_reduction) {
               return description.slice( 0, 80) + ' ...';
           }
           else{
@@ -220,7 +223,7 @@
 
     });    
 
-    var GroupPost = Vue.component('group-post', {
+    let groupPost = Vue.component('group-post', {
       props: ['post'],      
       template: `\
         <div class="group-post">\
@@ -230,17 +233,17 @@
       `
     });      
 
-    var VM = new Vue({
+    let VM = new Vue({
       el: '#app',   
 
       components: {
-        "card-post": CardPost,
-        "group-post": GroupPost
+        "card-post": cardPost,
+        "group-post": groupPost
       },
 
       data: {
 
-        sitename: "Vue.js - Группы карточек",       
+        siteName: "Vue.js - Группы карточек",       
         stateList: [
           { "value": "Не сделано" },
           { "value": "Cделано" }
@@ -320,8 +323,8 @@
       },
       computed:{
         filterCards: function(){
-          var loc_title = this.searchName.toLowerCase();
-          var loc_state = this.searchState.toLowerCase();
+          let loc_title = this.searchName.toLowerCase();
+          let loc_state = this.searchState.toLowerCase();
           if ( loc_title.length > 0 ){
             return this.cards.filter(function (elem) {                 
               if(loc_title==='') return true;
